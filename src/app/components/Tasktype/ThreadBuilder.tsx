@@ -1,13 +1,19 @@
 'use client'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { AiFillDelete, AiFillInfoCircle, AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
 import { BsFillLightbulbFill, BsFillQuestionCircleFill } from 'react-icons/bs'
 import { BiSolidCommentDetail, } from 'react-icons/bi'
 import { GiLotus } from 'react-icons/gi'
 
-type Props = {}
-
-const ThreadBuilder = (props: Props) => {
+type Props = {
+  description:string,
+  title:string
+}
+type T = {
+  id:number,
+  name:string
+}
+const ThreadBuilder = ({description,title}: Props) => {
   const [isTaskCollapsed, setTaskCollapsed] = useState(false)
   const [threads, setThreads] = useState([{ id: 0, name: 'Thread A' }])
 
@@ -20,16 +26,16 @@ const ThreadBuilder = (props: Props) => {
 
 
   return (
-    <section className='lg:w-1/2   w-full shadow-md rounded-lg bg-[#FDFDFD] my-6 mx-auto '>
+    <section className='w-full shadow-md rounded-lg bg-[#FDFDFD] my-6 mx-auto '>
       <div className='bg-black rounded-t-lg text-white font-bold flex items-center justify-center py-2'>
-        <h1 className=' text-center'>Technical Project Mangement</h1>
+        <h1 className=' text-center'>{title}</h1>
         <AiFillInfoCircle className='cursor-pointer mx-6' onClick={() => { setTaskCollapsed((prev) => !prev) }} />
       </div>
-      {/* TODO Padding removed from template revert to all Types */}
-      <div>
-        <div className={`my-6 transition-all ${isTaskCollapsed && 'hidden'}`}>
-          <p className='px-6'> <b>Description</b> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora, dolorum!</p>
+      <div className={`mt-6 border-b-2 px-6 py-3 transition-all && 'hidden'}`}>
+          <p className='px-6'> <b>Description</b> {description}</p>
         </div>
+      <div>
+        
         <div className='overflow-y-scroll h-[18rem]'>
           {threads.map((item) => (
             <Thread key={item.id} count={item.name} id={item.id} setThreads={setThreads}/>
@@ -41,7 +47,7 @@ const ThreadBuilder = (props: Props) => {
     </section>
   )
 }
-const Thread = ({ count, id, setThreads}: { count: string, id: number, setThreads: void }) => {
+const Thread = ({ count, id, setThreads}: { count: string, id: number, setThreads: React.Dispatch<React.SetStateAction<Array<T>>> }) => {
   const [isThreadCollapsed, setThreadCollapsed] = useState(false)
   const [subThreads, setSubThreads] = useState([<SubThread key={0} isThreadCollapsed={isThreadCollapsed} count={1} />])
 
@@ -51,7 +57,7 @@ const Thread = ({ count, id, setThreads}: { count: string, id: number, setThread
     setSubThreads((prevComponents) => [...prevComponents, newSubThread])
   };
   const deleteComponent = (id: number) => {
-    setThreads((prevComponents) => prevComponents.filter((component) => component.id !== id));
+    setThreads((prev: any[]) => prev.filter((item) => item.id !== id));
   };
   return (
     <section className='bg-slate-100'>
